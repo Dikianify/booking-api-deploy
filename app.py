@@ -8,7 +8,7 @@ import jinja2
 app = Flask(__name__)
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLodaer(template_dir))
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir))
 
 mail = setup_email(app)
 db = setup_db(app)
