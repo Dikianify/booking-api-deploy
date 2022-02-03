@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet" />
+<link href="../static/style.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="container">
+      <header>
+        <img src="../static/logo.png" style="width:200px;height:300px;">
+        <h2><a href="https://dikianify.github.io/intuit-app">Intuit Automation</a></h2>
+      </header>
+      <form action="/cancel_booking" method="POST">
+        <section>
+          <p>Thank you for booking an appointment with us!</p>
+          <p>Your Zoom appointment is on:</p>
+          <p>{{data.date}} at {{data.time}}</p>
+          <p>Pleased be prepared to talk in depth about company procedures. You may cancel your appointment at any time by clicking the button below.</p>
+          <button type="submit" name="submit_button" value={{data.email}} name="button">Cancel Booking</button>
+        </section>
+    </form> 
+  </div>
+</body>
+</html>
