@@ -1,3 +1,4 @@
-# Environment file
+# User Files
 
 .env
+database_editor.py
