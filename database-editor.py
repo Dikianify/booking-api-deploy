@@ -24,10 +24,10 @@ cur=con.cursor()
 # cur.execute("CREATE TABLE booked_appointments (EMAIL TEXT PRIMARY KEY NOT NULL, DATE TEXT NOT NULL, TIME TEXT NOT NULL);")
 # con.commit()
 
-for day in weekdays:
-  vals = (day, "10:00 - 10:30", "11:00 - 11:30", "1:00 - 1:30", "2:00 - 2:30", "3:00 - 3:30", "4:00 - 4:30")
-  cur.execute(f"INSERT INTO open_appointments (DATE, TIME_1, TIME_2, TIME_3, TIME_4, TIME_5, TIME_6) VALUES (%s, %s, %s, %s, %s, %s, %s)", vals)
+# for day in weekdays:
+#   vals = (day, "10:00 - 10:30", "11:00 - 11:30", "1:00 - 1:30", "2:00 - 2:30", "3:00 - 3:30", "4:00 - 4:30")
+#   cur.execute(f"INSERT INTO open_appointments (DATE, TIME_1, TIME_2, TIME_3, TIME_4, TIME_5, TIME_6) VALUES (%s, %s, %s, %s, %s, %s, %s)", vals)
 
-con.commit()
+# con.commit()
 
 print(cur.execute('SELECT * FROM open_appointments'))

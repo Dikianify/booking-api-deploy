@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, make_response
 import os
 from flask_cors import CORS
 from models import setup_db, BookedAppointments, OpenAppointments, setup_email
-from flask_mail import Mail, Message
+from flask_mail import Message
 import jinja2
 
 app = Flask(__name__)
@@ -14,11 +14,13 @@ mail = setup_email(app)
 db = setup_db(app)
 CORS(app)
 
+
 @app.route("/get_times", methods=(["POST"]))
 def get_times():
   date=request.get_json()[:10]
   
-  raw_date_data = db.session.query(OpenAppointments).filter_by(date=date).all()[0]
+  raw_date_data = OpenAppointments.query.filter_by(date=date).first()
+
 
   date_data = []
   for data in raw_date_data:
