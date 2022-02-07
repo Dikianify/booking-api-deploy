@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, make_response
 import os
+from flask_migrate import Migrate
 from flask_cors import CORS
 from models import setup_db, BookedAppointments, OpenAppointments, setup_email
 from flask_mail import Message
@@ -12,6 +13,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir))
 
 mail = setup_email(app)
 db = setup_db(app)
+migrate = Migrate(app, db)
 CORS(app)
 
 

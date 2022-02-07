@@ -15,7 +15,6 @@ flask-cors = "*"
 flask-mail = "*"
 jinja2 = "*"
 python-decouple = "*"
-python-dotenv = "*"
 
 [dev-packages]
 
