@@ -1,4 +1,5 @@
 import os
+import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 
@@ -14,6 +15,8 @@ def setup_email(app):
   return Mail(app)
 
 def setup_db(app):
+    print(os.environ.get('DATABASE_URL'))
+    print(config('DATABASE_URL'))
     app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://iuifkgiqsykklf:f40c3f83b11b2a21d40a28adb5a6125844793db8dc1623f43dce7de6889eb256@ec2-54-156-110-139.compute-1.amazonaws.com:5432/dfbcrvv8dikopj"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app

@@ -18,6 +18,8 @@ CORS(app)
 @app.route("/get_times", methods=(["POST"]))
 def get_times():
   date=request.get_json()[:10]
+
+  print(db.metadata.tables.keys())
   
   raw_date_data = OpenAppointments.query.filter_by(date=date).first()
 
