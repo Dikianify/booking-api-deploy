@@ -19,8 +19,9 @@ CORS(app)
 def get_times():
   date=request.get_json()[:10]
 
+  print(db.metadata.tables.keys())
   
-  raw_date_data = OpenAppointments.query.first()
+  raw_date_data = OpenAppointments.query.filter_by(date=date).first()
 
 
   date_data = []
