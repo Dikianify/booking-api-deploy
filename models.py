@@ -14,7 +14,7 @@ def setup_email(app):
   return Mail(app)
 
 def setup_db(app):
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://iuifkgiqsykklf:f40c3f83b11b2a21d40a28adb5a6125844793db8dc1623f43dce7de6889eb256@ec2-54-156-110-139.compute-1.amazonaws.com:5432/dfbcrvv8dikopj"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
