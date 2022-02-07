@@ -1,4 +1,4 @@
-from decouple import config
+import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 
@@ -7,14 +7,14 @@ db = SQLAlchemy()
 def setup_email(app):
   app.config['MAIL_SERVER']="smtp.office365.com"
   app.config['MAIL_PORT'] = 587
-  app.config['MAIL_USERNAME'] = config('MAIL_USERNAME')
-  app.config['MAIL_PASSWORD'] = config('MAIL_PASSWORD')
+  app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+  app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
   app.config['MAIL_USE_TLS'] = False
   app.config['MAIL_USE_SSL'] = True
   return Mail(app)
 
 def setup_db(app):
-    app.config["SQLALCHEMY_DATABASE_URI"] = config('DATABASE_URL')
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
