@@ -1,5 +1,5 @@
 import os
-import config
+from decouple import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 
