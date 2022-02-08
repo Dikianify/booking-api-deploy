@@ -26,13 +26,13 @@ class BookedAppointments(db.Model):
   email = db.Column(db.Text, primary_key=True)
   date = db.Column(db.Text, unique=True, nullable=False)
   time = db.Column(db.Text, unique=True, nullable=False)
-  column = db.Column(db.Text, unique=True, nullable=False)
+  time_column = db.Column(db.Text, unique=True, nullable=False)
 
-  def __init__(self, email, date, time, column):
+  def __init__(self, email, date, time, time_column):
     self.email = email
     self.date = date
     self.time = time
-    self.column = column
+    self.time_column = time_column
 
   def insert(self):
       db.session.add(self)

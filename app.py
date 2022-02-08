@@ -20,18 +20,17 @@ CORS(app)
 @app.route("/get_times", methods=(["POST"]))
 def get_times():
   date=request.get_json()[:10]
-
-  print(db.metadata.tables.keys())
   
-  raw_date_data = OpenAppointments.query.filter_by(date=date).first()
-
+  time_dict = db.session.query(OpenAppointments).filter_by(date=date).first().__dict__
 
   date_data = []
-  for data in raw_date_data:
-    if data[1] != "":
+  for i in range(0, 6):
+    time_col = f"time_{str(i+1)}"
+    time_val = time_dict[time_col]
+    if time_val != "":
       date_data.append(
-        {"value":data[0],
-        "label":data[1]
+        {"value":time_col,
+        "label":time_val
         })
 
   response = make_response(jsonify({ "options" : date_data }))
@@ -46,24 +45,27 @@ def post_appointment():
   email=data[0]
   date=data[1][:10]
   time=data[2]["label"]
-  time_column=data[2]["value"]
+  selected_time_column=data[2]["value"]
 
-  db.session.query(OpenAppointments).filter_by(date=date).update({time_column:""})
+  db.session.query(OpenAppointments).filter_by(date=date).update({selected_time_column:""})
 
   old_booking = db.session.query(BookedAppointments).filter_by(email=email).first()
   if old_booking != None:
     db.session.delete(old_booking)
-    db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.column:old_booking.time})
+    db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.time_column:old_booking.time})
 
-  new_booking=BookedAppointments(email=email, date=date, time=time, column=time_column)
+  new_booking=BookedAppointments(email=email, date=date, time=time, time_column=selected_time_column)
   new_booking.insert()
 
-  msg = Message(subject="Thank You for Booking with Us!", sender="jrogers@intuitautomation.com", recipients = [email])
-  template = jinja_env.get_template('email.html')
-  msg.html = template.render(data={'email':email,'date':date,'time':time})
-  mail.send(msg)
+  # msg = Message(subject="Thank You for Booking with Us!", sender="jrogers@intuitautomation.com", recipients = [email])
+  # template = jinja_env.get_template('email.html')
+  # msg.html = template.render(data={'email':email,'date':date,'time':time})
+  # mail.send(msg)
 
-  return jsonify('ok'), 201
+  response = make_response(jsonify("ok"))
+  response.headers["Content-Type"] = "application/json"
+
+  return response
 
 @app.route('/delete_booking', methods=['POST'])
 def delete_booking():
@@ -71,7 +73,7 @@ def delete_booking():
 
   old_booking = db.session.query(BookedAppointments).filter_by(email=email).first()
   old_booking.delete()
-  db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.column:old_booking.time})
+  db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.time_column:old_booking.time})
   db.session.commit()
 
 if __name__ == "__main__":

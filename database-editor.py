@@ -15,7 +15,7 @@ for date in dates:
     weekdays.append(new_date)
 
 
-con=psycopg2.connect(config('DATABASE_URL'), sslmode='require')
+con=psycopg2.connect("postgresql://iuifkgiqsykklf:f40c3f83b11b2a21d40a28adb5a6125844793db8dc1623f43dce7de6889eb256@ec2-54-156-110-139.compute-1.amazonaws.com:5432/dfbcrvv8dikopj", sslmode='require')
 
 cur=con.cursor()
 
@@ -30,4 +30,4 @@ cur=con.cursor()
 
 # con.commit()
 
-print(cur.execute('SELECT * FROM open_appointments'))
+print(cur.execute('show tables'))
