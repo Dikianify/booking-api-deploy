@@ -13,7 +13,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir))
 
 mail = setup_email(app)
 db = setup_db(app)
-migrate = Migrate(app, db)
+# migrate = Migrate(app, db)
 CORS(app)
 
 
