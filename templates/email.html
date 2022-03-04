@@ -25,7 +25,7 @@
           font-size: 300%;
           text-decoration: none;" href="https://www.intuitautomation.com">Intuit Automation</a>
       </div>
-      <form action="https://www.intuitautomation.com/cancelbooking?email={{data.email}}" style="padding-top: 20px;
+      <form action="http://localhost:3000/cancelbooking" method="get" style="padding-top: 20px;
       padding-left: 20px;
       padding-bottom: 20px;
       padding-right: 20px;
@@ -43,7 +43,7 @@
           font-size: 160%; color:#fff; font-weight: bold;">{{data.date}} at {{data.time}}</p>
           <p style="font-family: 'Poppins', verdana;
           font-size: 160%; color: black;">Pleased be prepared to talk in depth about company procedures. You may cancel your appointment at any time by clicking the button below.</p>
-          <button type="submit" name="submit_button" value={{data.email}} name="button" style="font-family: 'Poppins';
+          <button type="submit" name="email" value={{data.email}} style="font-family: 'Poppins', verdana;
           outline: none;
           padding: 5px 5px;
           background:#fff; 

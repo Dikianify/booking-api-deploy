@@ -40,7 +40,7 @@ def get_times():
 @app.route("/post_appointment", methods=["POST"])
 def post_appointment():
   data=request.get_json()
-  email=data[0]
+  email=data[0].lower()
   date=data[1][:10]
   time=data[2]["label"]
   selected_time_column=data[2]["value"]
@@ -48,7 +48,6 @@ def post_appointment():
   db.session.query(OpenAppointments).filter_by(date=date).update({selected_time_column:""})
 
   old_booking = db.session.query(BookedAppointments).filter_by(email=email).first()
-  print(old_booking)
   if old_booking != None:
     db.session.delete(old_booking)
     db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.time_column:old_booking.time})
@@ -57,6 +56,18 @@ def post_appointment():
   new_booking.insert()
 
   db.session.commit()
+
+  response = make_response(jsonify("ok"))
+  response.headers["Content-Type"] = "application/json"
+
+  return response
+
+@app.route('/cancellation_email', methods=["POST"])
+def cancellation_email():
+  data=request.get_json()
+  email=data[0].lower()
+  date=data[1]
+  time=data[2]
 
   msg = Message(subject="Thank You for Booking with Us!", sender="jrogers@intuitautomation.com", recipients = [email])
   template = jinja_env.get_template('email.html')
@@ -70,12 +81,14 @@ def post_appointment():
 
 @app.route('/cancel_booking', methods=['POST'])
 def delete_booking():
-  email=request.get_json()
+  email=request.get_json().lower()
 
   old_booking = db.session.query(BookedAppointments).filter_by(email=email).first()
-  old_booking.delete()
-  db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.time_column:old_booking.time})
-  db.session.commit()
+
+  if old_booking != None:
+    old_booking.delete()
+    db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.time_column:old_booking.time})
+    db.session.commit()
 
   response = make_response(jsonify("ok"))
   response.headers["Content-Type"] = "application/json"
