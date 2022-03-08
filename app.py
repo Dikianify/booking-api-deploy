@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response
 import os
 from flask_cors import CORS
-from models import setup_db, BookedAppointments, OpenAppointments, setup_email
+from models import setup_db, BookedAppointments, OpenAppointments, Accounts, setup_email
 from flask_mail import Message
 import jinja2
 
@@ -33,7 +33,6 @@ def get_times():
 
   response = make_response(jsonify({ "options" : date_data }))
   response.headers["Content-Type"] = "application/json"
-
   return response
 
 
@@ -59,7 +58,6 @@ def post_appointment():
 
   response = make_response(jsonify("ok"))
   response.headers["Content-Type"] = "application/json"
-
   return response
 
 @app.route('/cancellation_email', methods=["POST"])
@@ -77,7 +75,6 @@ def cancellation_email():
 
   response = make_response(jsonify("ok"))
   response.headers["Content-Type"] = "application/json"
-
   return response
 
 @app.route('/cancel_booking', methods=['POST'])
@@ -93,8 +90,47 @@ def delete_booking():
 
   response = make_response(jsonify("ok"))
   response.headers["Content-Type"] = "application/json"
-
   return response
+
+@app.route('/login', methods={'POST'})
+def login():
+  email=request.get_json()[0]
+  password=hash(request.get_json()[1])
+
+  user = db.session.query(Accounts).filter_by(email=email).first()
+
+  if user != None:
+    if user.password == hash(password):
+        response = make_response(jsonify("ok"))
+        response.headers["Content-Type"] = "application/json"
+        return response
+
+  response = make_response(jsonify("not ok"))
+  response.headers["Content-Type"] = "application/json"
+  return response
+
+
+@app.route('/create_account')
+def login():
+  email=request.get_json()[0]
+  password=hash(request.get_json()[1])
+  name=request.get_json()[2]
+  company=request.get_json()[3]
+
+  user = db.session.query(Accounts).filter_by(email=email).first()
+
+  if user == None:
+    new_user = Accounts(email,password,name,company)
+    new_user.insert()
+    response = make_response(jsonify("ok"))
+    response.headers["Content-Type"] = "application/json"
+    return response
+
+  response = make_response(jsonify("not ok"))
+  response.headers["Content-Type"] = "application/json"
+  return response
+
+
 
 if __name__ == "__main__":
   app.run()
