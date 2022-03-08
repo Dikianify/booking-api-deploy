@@ -110,8 +110,8 @@ def login():
   return response
 
 
-@app.route('/create_account')
-def login():
+@app.route('/create_account', methods={'POST'})
+def create_account():
   email=request.get_json()[0]
   password=hash(request.get_json()[1])
   name=request.get_json()[2]
