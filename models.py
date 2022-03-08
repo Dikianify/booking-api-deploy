@@ -72,7 +72,7 @@ class OpenAppointments(db.Model):
       db.session.commit()
 
 class Accounts(db.Model):
-  __tablename__ = 'booked_appointments'
+  __tablename__ = 'accounts'
   email = db.Column(db.Text, primary_key=True)
   password = db.Column(db.Text, unique=True, nullable=False)
   name = db.Column(db.Text, unique=False, nullable=True)
