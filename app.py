@@ -69,6 +69,7 @@ def cancellation_email():
   date=data[1]
   time=data[2]
 
+  mail.connect()
   msg = Message(subject="Thank You for Booking with Us!", sender="jrogers@intuitautomation.com", recipients = [email])
   template = jinja_env.get_template('email.html')
   msg.html = template.render(data={'email':email,'date':date,'time':time})
