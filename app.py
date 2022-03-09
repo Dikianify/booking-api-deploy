@@ -14,7 +14,7 @@ mail = setup_email(app)
 db = setup_db(app)
 CORS(app)
 
-@app.route("/", methods=(["POST"]))
+@app.route("/")
 def get_times():
   response = make_response(jsonify("ok"))
   response.headers["Content-Type"] = "application/json"
