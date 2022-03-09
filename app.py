@@ -15,7 +15,7 @@ db = setup_db(app)
 CORS(app)
 
 @app.route("/")
-def get_times():
+def base():
   response = make_response(jsonify("ok"))
   response.headers["Content-Type"] = "application/json"
   return response
