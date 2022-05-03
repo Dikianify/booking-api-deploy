@@ -8,10 +8,10 @@ db = SQLAlchemy()
 def setup_email(app):
   app.config['MAIL_SERVER']="smtp.office365.com"
   app.config['MAIL_PORT'] = 587
-  app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-  app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-  app.config['MAIL_USE_TLS'] = False
-  app.config['MAIL_USE_SSL'] = True
+  app.config['MAIL_USERNAME'] = 'jrogers@intuitautomation.com'
+  app.config['MAIL_PASSWORD'] = 'G0d$mack1'
+  app.config['MAIL_USE_TLS'] = True
+  app.config['MAIL_USE_SSL'] = False
   return Mail(app)
 
 def setup_db(app):
@@ -61,6 +61,28 @@ class OpenAppointments(db.Model):
     self.time_4 = time_4
     self.time_5 = time_5
     self.time_6 = time_6
+
+  def insert(self):
+      db.session.add(self)
+      db.session.commit()
+  def delete(self):
+      db.session.delete(self)
+      db.session.commit()
+  def update(self):
+      db.session.commit()
+
+class Accounts(db.Model):
+  __tablename__ = 'accounts'
+  email = db.Column(db.Text, primary_key=True)
+  password = db.Column(db.Text, unique=True, nullable=False)
+  name = db.Column(db.Text, unique=False, nullable=True)
+  company = db.Column(db.Text, unique=False, nullable=True)
+
+  def __init__(self, email, password, name, company):
+    self.email = email
+    self.password = password
+    self.name = name
+    self.company = company
 
   def insert(self):
       db.session.add(self)

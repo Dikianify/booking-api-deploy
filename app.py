@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response
 import os
 from flask_cors import CORS
-from models import setup_db, BookedAppointments, OpenAppointments, setup_email
+from models import setup_db, BookedAppointments, OpenAppointments, Accounts, setup_email
 from flask_mail import Message
 import jinja2
 
@@ -13,6 +13,12 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir))
 mail = setup_email(app)
 db = setup_db(app)
 CORS(app)
+
+@app.route("/")
+def base():
+  response = make_response(jsonify("ok"))
+  response.headers["Content-Type"] = "application/json"
+  return response
 
 
 @app.route("/get_times", methods=(["POST"]))
@@ -33,14 +39,13 @@ def get_times():
 
   response = make_response(jsonify({ "options" : date_data }))
   response.headers["Content-Type"] = "application/json"
-
   return response
 
 
 @app.route("/post_appointment", methods=["POST"])
 def post_appointment():
   data=request.get_json()
-  email=data[0]
+  email=data[0].lower()
   date=data[1][:10]
   time=data[2]["label"]
   selected_time_column=data[2]["value"]
@@ -55,24 +60,83 @@ def post_appointment():
   new_booking=BookedAppointments(email=email, date=date, time=time, time_column=selected_time_column)
   new_booking.insert()
 
-  # msg = Message(subject="Thank You for Booking with Us!", sender="jrogers@intuitautomation.com", recipients = [email])
-  # template = jinja_env.get_template('email.html')
-  # msg.html = template.render(data={'email':email,'date':date,'time':time})
-  # mail.send(msg)
+  db.session.commit()
 
   response = make_response(jsonify("ok"))
   response.headers["Content-Type"] = "application/json"
-
   return response
 
-@app.route('/delete_booking', methods=['POST'])
+@app.route('/cancellation_email', methods=["POST"])
+def cancellation_email():
+  data=request.get_json()
+  email=data[0].lower()
+  date=data[1]
+  time=data[2]
+
+  with mail.connect() as conn:
+    msg = Message(subject="Thank You for Booking with Us!", sender="jrogers@intuitautomation.com", recipients = [email])
+    template = jinja_env.get_template('email.html')
+    msg.html = template.render(data={'email':email,'date':date,'time':time})
+    conn.send(msg)
+
+  response = make_response(jsonify("ok"))
+  response.headers["Content-Type"] = "application/json"
+  return response
+
+@app.route('/cancel_booking', methods=['POST'])
 def delete_booking():
-  email = request.form['submit_button']
+  email=request.get_json().lower()
 
   old_booking = db.session.query(BookedAppointments).filter_by(email=email).first()
-  old_booking.delete()
-  db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.time_column:old_booking.time})
-  db.session.commit()
+
+  if old_booking != None:
+    old_booking.delete()
+    db.session.query(OpenAppointments).filter_by(date=old_booking.date).update({old_booking.time_column:old_booking.time})
+    db.session.commit()
+
+  response = make_response(jsonify("ok"))
+  response.headers["Content-Type"] = "application/json"
+  return response
+
+@app.route('/login', methods={'POST'})
+def login():
+  email=request.get_json()[0]
+  password=hash(request.get_json()[1])
+
+  user = db.session.query(Accounts).filter_by(email=email).first()
+
+  if user != None:
+    if user.password == hash(password):
+        response = make_response(jsonify("ok"))
+        response.headers["Content-Type"] = "application/json"
+        return response
+
+  response = make_response(jsonify("not ok"))
+  response.headers["Content-Type"] = "application/json"
+  return response
+
+
+@app.route('/create_account', methods={'POST'})
+def create_account():
+  email=request.get_json()[0]
+  password=hash(request.get_json()[1])
+  name=request.get_json()[2]
+  company=request.get_json()[3]
+
+  user = db.session.query(Accounts).filter_by(email=email).first()
+
+  if user == None:
+    new_user = Accounts(email,password,name,company)
+    new_user.insert()
+    response = make_response(jsonify("ok"))
+    response.headers["Content-Type"] = "application/json"
+    return response
+
+  response = make_response(jsonify("not ok"))
+  response.headers["Content-Type"] = "application/json"
+  return response
+
+
 
 if __name__ == "__main__":
   app.run()
