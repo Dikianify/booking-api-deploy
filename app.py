@@ -139,9 +139,9 @@ def create_account():
 @app.route('/test_endpoint', methods={'POST'})
 def test_endpoint():
   new_sentence = request.get_json()["sentence"].replace(" ", "")
-  return make_response(jsonify(sentence=new_sentence))
-
-  return request.get_json()
+  response = make_response(jsonify(sentence=new_sentence))
+  response.headers["Content-Type"] = "application/json"
+  return response
 
 if __name__ == "__main__":
   app.run()
