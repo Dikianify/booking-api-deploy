@@ -140,7 +140,6 @@ def create_account():
 def test_endpoint():
   new_sentence = request.get_json()["sentence"].replace(" ", "")
   response = make_response(jsonify(sentence=new_sentence))
-  response.headers["Content-Type"] = "application/json"
   return response
 
 if __name__ == "__main__":
