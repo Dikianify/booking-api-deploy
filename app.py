@@ -138,8 +138,8 @@ def create_account():
 
 @app.route('/test_endpoint', methods={'POST'})
 def test_endpoint():
-  #new_sentence = request.get_json()[0].replace(" ", "")
-  #return make_response(jsonify(sentence=new_sentence))
+  new_sentence = request.get_json()["sentence"].replace(" ", "")
+  return make_response(jsonify(sentence=new_sentence))
 
   return request.get_json()
 
